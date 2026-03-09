@@ -49,7 +49,7 @@ jobs:
       - run: npx prisma generate
       - run: npm run build
         env:
-          DATABASE_URL: file:./dev.db
+          DATABASE_URL: postgresql://fake:fake@localhost:5432/fake
 
   docker:
     name: Docker Build
