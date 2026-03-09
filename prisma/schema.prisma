@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Service {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  duration    Int
+  price       Int
+  category    String    @default("coiffure")
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+}
+
+model TimeSlot {
+  id          String    @id @default(cuid())
+  date        DateTime
+  startTime   String
+  endTime     String
+  isAvailable Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+}
+
+model Booking {
+  id            String      @id @default(cuid())
+  customerName  String
+  customerEmail String
+  customerPhone String
+  serviceId     String
+  service       Service     @relation(fields: [serviceId], references: [id])
+  timeSlotId    String
+  timeSlot      TimeSlot    @relation(fields: [timeSlotId], references: [id])
+  locationType  String      @default("SALON")
+  address       String?
+  distance      Float?
+  deliveryFee   Int         @default(0)
+  status        String      @default("CONFIRMED")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  createdAt DateTime @default(now())
+}
