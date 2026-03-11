@@ -5,6 +5,8 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+COPY prisma.config.ts ./prisma.config.ts
 RUN npm ci
 
 # Build the app
@@ -12,7 +14,12 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Prisma v7 needs prisma.config.ts + schema to generate
 ENV NEXT_TELEMETRY_DISABLED=1
+# Provide a dummy DATABASE_URL for build (not used at runtime)
+ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+ENV RESEND_API_KEY="re_dummy_build"
 RUN npx prisma generate
 RUN npm run build
 
@@ -29,7 +36,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/src/generated ./src/generated
 
 USER nextjs
 
