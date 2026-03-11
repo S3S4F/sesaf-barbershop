@@ -127,12 +127,65 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
 </html>`;
 
   try {
+    // Email au client
     await transporter.sendMail({
       from: `"SESAF Barbershop" <${process.env.SMTP_USER}>`,
       to: data.customerEmail,
       subject: "Reservation confirmee - SESAF Barbershop",
       html,
     });
+
+    // Notification au barber (admin)
+    const adminEmail = process.env.SMTP_USER;
+    if (adminEmail) {
+      const locationText = data.locationType === "DOMICILE"
+        ? `A domicile - ${data.address || "adresse non precisee"}`
+        : "Au salon - Bat D Arancette";
+
+      await transporter.sendMail({
+        from: `"SESAF Barbershop" <${adminEmail}>`,
+        to: adminEmail,
+        subject: `Nouvelle reservation - ${data.customerName}`,
+        html: `
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background-color:#0f0f0f;font-family:'Segoe UI',Roboto,Arial,sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0f0f0f;padding:32px 16px;">
+<tr><td align="center">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+
+  <tr><td style="background:linear-gradient(135deg,#1e40af,#1e3a8a,#172554);border-radius:20px 20px 0 0;padding:40px 40px 32px;text-align:center;">
+    <img src="${logoUrl}" alt="SESAF Barbershop" width="140" style="display:block;margin:0 auto 16px;max-width:140px;height:auto;" />
+    <p style="margin:0;font-size:14px;color:#93c5fd;letter-spacing:1px;text-transform:uppercase;">Nouvelle reservation</p>
+  </td></tr>
+
+  <tr><td style="background-color:#1a1a1a;padding:32px 40px;">
+    <h2 style="margin:0 0 20px;font-size:20px;color:#f5f5f5;font-weight:600;">Un client a reserve !</h2>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#252525;border-radius:16px;overflow:hidden;border:1px solid #333;">
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Client</td><td style="padding:12px 16px;text-align:right;color:#ffffff;font-weight:600;font-size:14px;border-bottom:1px solid #333;">${data.customerName}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Email</td><td style="padding:12px 16px;text-align:right;color:#ffffff;font-weight:600;font-size:14px;border-bottom:1px solid #333;">${data.customerEmail}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Service</td><td style="padding:12px 16px;text-align:right;color:#fbbf24;font-weight:700;font-size:15px;border-bottom:1px solid #333;">${data.serviceName}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Date</td><td style="padding:12px 16px;text-align:right;color:#ffffff;font-weight:600;font-size:14px;border-bottom:1px solid #333;">${data.date}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Heure</td><td style="padding:12px 16px;text-align:right;color:#ffffff;font-weight:600;font-size:14px;border-bottom:1px solid #333;">${data.time}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:1px solid #333;">Lieu</td><td style="padding:12px 16px;text-align:right;color:#ffffff;font-weight:600;font-size:14px;border-bottom:1px solid #333;">${locationText}</td></tr>
+      <tr><td style="padding:12px 16px;color:#9ca3af;font-size:14px;border-bottom:none;">Prix</td><td style="padding:12px 16px;text-align:right;color:#fbbf24;font-weight:800;font-size:18px;border-bottom:none;">${priceFormatted}&#8364;</td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="background-color:#111111;border-radius:0 0 20px 20px;padding:20px 40px;text-align:center;border-top:1px solid #2a2a2a;">
+    <p style="margin:0;font-size:12px;color:#52525b;">SESAF Barbershop - Notification admin</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`,
+      });
+    }
+
     return { success: true };
   } catch (error) {
     console.error("Erreur envoi email:", error);
