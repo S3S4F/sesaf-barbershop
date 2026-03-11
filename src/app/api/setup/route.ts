@@ -93,3 +93,7 @@ export async function POST() {
     await pool.end();
   }
 }
+
+export async function GET() {
+  return POST();
+}
