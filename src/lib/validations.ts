@@ -13,7 +13,7 @@ export const bookingSchema = z.object({
     .regex(/^[0-9+\s-]+$/, "Numéro de téléphone invalide"),
   serviceId: z.string().min(1, "Veuillez choisir un service"),
   timeSlotId: z.string().min(1, "Veuillez choisir un créneau"),
-  locationType: z.enum(["SALON", "DOMICILE"]),
+  locationType: z.enum(["SALON", "DOMICILE"]).default("SALON"),
   address: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),

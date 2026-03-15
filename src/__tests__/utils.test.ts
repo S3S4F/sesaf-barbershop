@@ -16,7 +16,7 @@ describe("cn utility", () => {
 describe("formatPrice", () => {
   it("formats price with locale", () => {
     const result = formatPrice(1500);
-    expect(result).toContain("FCFA");
-    expect(result).toContain("1");
+    expect(result).toContain("€");
+    expect(result).toContain("15");
   });
 });
