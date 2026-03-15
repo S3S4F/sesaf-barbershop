@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import { format, addDays, isSameDay, isToday, isBefore, startOfDay } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Clock } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface TimeSlot {

@@ -8,7 +8,7 @@ export async function GET() {
       orderBy: { price: "asc" },
     });
     return NextResponse.json(services);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Erreur lors de la récupération des services" },
       { status: 500 }

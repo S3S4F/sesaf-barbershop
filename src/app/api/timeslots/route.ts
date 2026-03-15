@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     }));
 
     return NextResponse.json(slotsWithAvailability);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Erreur lors de la récupération des créneaux" },
       { status: 500 }

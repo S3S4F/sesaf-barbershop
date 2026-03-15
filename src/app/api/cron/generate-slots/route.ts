@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { addDays, format, nextSaturday, nextSunday, startOfDay } from "date-fns";
 
 // Génère les créneaux de 10h à 17h toutes les 30 minutes
-function generateWeekendSlots(date: Date): { startTime: string; endTime: string }[] {
+function generateWeekendSlots(): { startTime: string; endTime: string }[] {
   const slots = [];
   for (let hour = 10; hour < 17; hour++) {
     for (const min of [0, 30]) {
@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
     for (const day of weekendDays) {
       const dateStr = format(day, "yyyy-MM-dd");
       const slotDate = new Date(dateStr + "T00:00:00.000Z");
-      const timeSlots = generateWeekendSlots(day);
+      const timeSlots = generateWeekendSlots();
 
       for (const { startTime, endTime } of timeSlots) {
         const id = `${dateStr}-${startTime}`;

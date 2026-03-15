@@ -150,7 +150,7 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(bookings);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Erreur lors de la récupération des réservations" },
       { status: 500 }

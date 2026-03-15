@@ -27,7 +27,7 @@ export async function PATCH(
     });
 
     return NextResponse.json(booking);
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Réservation introuvable" },
       { status: 404 }
