@@ -13,16 +13,98 @@ import {
   Mail,
   Home,
   ArrowLeft,
+  CalendarPlus,
 } from "lucide-react";
+
+function buildGoogleCalendarUrl(
+  service: string,
+  rawDate: string,
+  startTime: string,
+  endTime: string
+) {
+  // Format: YYYYMMDDTHHMMSS
+  const start = `${rawDate.replace(/-/g, "")}T${startTime.replace(":", "")}00`;
+  const end = `${rawDate.replace(/-/g, "")}T${endTime.replace(":", "")}00`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: `SESAF Barbershop - ${service}`,
+    dates: `${start}/${end}`,
+    details: "Rendez-vous chez SESAF Barbershop. Présente-toi 5 minutes avant.",
+    location: "Residence Arancette, Bat D, 64100 Bayonne, France",
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+function buildOutlookUrl(
+  service: string,
+  rawDate: string,
+  startTime: string,
+  endTime: string
+) {
+  const startIso = `${rawDate}T${startTime}:00`;
+  const endIso = `${rawDate}T${endTime}:00`;
+  const params = new URLSearchParams({
+    path: "/calendar/action/compose",
+    rru: "addevent",
+    subject: `SESAF Barbershop - ${service}`,
+    startdt: startIso,
+    enddt: endIso,
+    body: "Rendez-vous chez SESAF Barbershop. Présente-toi 5 minutes avant.",
+    location: "Residence Arancette, Bat D, 64100 Bayonne, France",
+  });
+  return `https://outlook.live.com/calendar/0/deeplink/compose?${params.toString()}`;
+}
+
+function buildIcsContent(
+  service: string,
+  rawDate: string,
+  startTime: string,
+  endTime: string,
+  bookingId: string
+) {
+  const start = `${rawDate.replace(/-/g, "")}T${startTime.replace(":", "")}00`;
+  const end = `${rawDate.replace(/-/g, "")}T${endTime.replace(":", "")}00`;
+  const now = new Date().toISOString().replace(/[-:]/g, "").split(".")[0];
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//SESAF Barbershop//FR",
+    "BEGIN:VEVENT",
+    `UID:${bookingId}@sesaf-barbershop`,
+    `DTSTAMP:${now}Z`,
+    `DTSTART:${start}`,
+    `DTEND:${end}`,
+    `SUMMARY:SESAF Barbershop - ${service}`,
+    "DESCRIPTION:Rendez-vous chez SESAF Barbershop. Présente-toi 5 minutes avant.",
+    "LOCATION:Residence Arancette\\, Bat D\\, 64100 Bayonne\\, France",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
 
 export function ConfirmationContent() {
   const searchParams = useSearchParams();
   const name = searchParams.get("name") || "";
   const service = searchParams.get("service") || "";
   const date = searchParams.get("date") || "";
+  const rawDate = searchParams.get("rawDate") || "";
   const time = searchParams.get("time") || "";
+  const endTime = searchParams.get("endTime") || "";
   const price = searchParams.get("price") || "0";
   const id = searchParams.get("id") || "";
+
+  const hasCalendarData = rawDate && time && endTime;
+
+  const handleDownloadIcs = () => {
+    const ics = buildIcsContent(service, rawDate, time, endTime, id);
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "sesaf-barbershop.ics";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen py-20 flex items-center justify-center">
@@ -98,6 +180,59 @@ export function ConfirmationContent() {
             )}
           </CardContent>
         </Card>
+
+        {/* Ajouter au calendrier */}
+        {hasCalendarData && (
+          <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4 mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <CalendarPlus className="w-5 h-5 text-amber-500" />
+              <p className="text-white text-sm font-medium">
+                Ajouter à mon calendrier
+              </p>
+            </div>
+            <div className="grid grid-cols-3 gap-2">
+              <a
+                href={buildGoogleCalendarUrl(service, rawDate, time, endTime)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1.5 p-3 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors cursor-pointer"
+              >
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#4285F4" strokeWidth="1.5"/>
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="#4285F4" strokeWidth="1.5" strokeLinecap="round"/>
+                  <text x="12" y="19" textAnchor="middle" fontSize="7" fontWeight="bold" fill="#4285F4">G</text>
+                </svg>
+                <span className="text-xs text-zinc-400">Google</span>
+              </a>
+
+              <button
+                onClick={handleDownloadIcs}
+                className="flex flex-col items-center gap-1.5 p-3 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors cursor-pointer"
+              >
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#ffffff" strokeWidth="1.5"/>
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round"/>
+                  <text x="12" y="19" textAnchor="middle" fontSize="6" fontWeight="bold" fill="#ffffff">ICS</text>
+                </svg>
+                <span className="text-xs text-zinc-400">Apple</span>
+              </button>
+
+              <a
+                href={buildOutlookUrl(service, rawDate, time, endTime)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex flex-col items-center gap-1.5 p-3 bg-zinc-800 hover:bg-zinc-700 rounded-xl transition-colors cursor-pointer"
+              >
+                <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none">
+                  <rect x="3" y="4" width="18" height="18" rx="2" stroke="#0078D4" strokeWidth="1.5"/>
+                  <path d="M16 2v4M8 2v4M3 10h18" stroke="#0078D4" strokeWidth="1.5" strokeLinecap="round"/>
+                  <text x="12" y="19" textAnchor="middle" fontSize="5" fontWeight="bold" fill="#0078D4">OUT</text>
+                </svg>
+                <span className="text-xs text-zinc-400">Outlook</span>
+              </a>
+            </div>
+          </div>
+        )}
 
         <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-4 mb-6">
           <div className="flex items-start gap-3">

@@ -7,7 +7,9 @@ interface BookingEmailData {
   customerEmail: string;
   serviceName: string;
   date: string;
+  rawDate?: string;
   time: string;
+  endTime?: string;
   price: number;
   locationType: string;
   address?: string;
@@ -15,6 +17,21 @@ interface BookingEmailData {
 
 export async function sendBookingConfirmation(data: BookingEmailData) {
   const priceFormatted = (data.price / 100).toFixed(2).replace(".", ",");
+
+  // Lien Google Calendar
+  let googleCalendarUrl = "";
+  if (data.rawDate && data.time && data.endTime) {
+    const start = `${data.rawDate.replace(/-/g, "")}T${data.time.replace(":", "")}00`;
+    const end = `${data.rawDate.replace(/-/g, "")}T${data.endTime.replace(":", "")}00`;
+    const gcParams = new URLSearchParams({
+      action: "TEMPLATE",
+      text: `SESAF Barbershop - ${data.serviceName}`,
+      dates: `${start}/${end}`,
+      details: "Rendez-vous chez SESAF Barbershop. Présente-toi 5 minutes avant.",
+      location: "Residence Arancette, Bat D, 64100 Bayonne, France",
+    });
+    googleCalendarUrl = `https://calendar.google.com/calendar/render?${gcParams.toString()}`;
+  }
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://sesaf-barbershop.vercel.app";
   const logoUrl = `${baseUrl}/logo.png`;
   const adminEmail = process.env.ADMIN_EMAIL || process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
@@ -97,6 +114,13 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
   </td></tr>
 
   ${locationMapHtml}
+
+  <!-- AJOUTER AU CALENDRIER -->
+  ${googleCalendarUrl ? `<tr><td style="background-color:#1a1a1a;padding:0 40px 24px;text-align:center;">
+    <a href="${googleCalendarUrl}" target="_blank" style="display:inline-block;background-color:#1a73e8;color:#ffffff;text-decoration:none;padding:12px 28px;border-radius:10px;font-size:14px;font-weight:600;">
+      + Ajouter à Google Calendar
+    </a>
+  </td></tr>` : ""}
 
   <!-- INFO -->
   <tr><td style="background-color:#1a1a1a;padding:0 40px 32px;">

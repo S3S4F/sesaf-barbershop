@@ -190,7 +190,9 @@ export default function BookingPage() {
         name: result.booking.customerName,
         service: result.booking.service,
         date: result.booking.date,
+        rawDate: result.booking.rawDate,
         time: result.booking.time,
+        endTime: result.booking.endTime,
         price: result.booking.price.toString(),
         id: result.booking.id,
       });
