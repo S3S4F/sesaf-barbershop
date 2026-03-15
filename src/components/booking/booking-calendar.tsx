@@ -92,8 +92,7 @@ export function BookingCalendar({
         <div className="grid grid-cols-7 gap-2">
           {days.map((day) => {
             const isPast = isBefore(day, startOfDay(new Date()));
-            const isSunday = day.getDay() === 0;
-            const isDisabled = isPast || isSunday;
+            const isDisabled = isPast;
             const isSelected = selectedDate && isSameDay(day, selectedDate);
 
             return (

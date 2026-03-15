@@ -429,7 +429,7 @@ export default function AdminPage() {
                           <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 text-amber-500" />
                             <span>
-                              {format(new Date(booking.timeSlot.date), "dd MMM", {
+                              {format(new Date(booking.timeSlot.date), "EEE dd MMM yyyy", {
                                 locale: fr,
                               })}
                             </span>
@@ -578,7 +578,7 @@ export default function AdminPage() {
                           <div className="flex items-center gap-2 text-sm">
                             <Calendar className="w-3.5 h-3.5 text-amber-500" />
                             <span className="text-white font-medium">
-                              {format(new Date(slot.date), "EEE dd MMM", {
+                              {format(new Date(slot.date), "EEE dd MMM yyyy", {
                                 locale: fr,
                               })}
                             </span>

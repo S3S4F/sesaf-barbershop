@@ -1,12 +1,6 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface BookingEmailData {
   customerName: string;
@@ -23,6 +17,7 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
   const priceFormatted = (data.price / 100).toFixed(2).replace(".", ",");
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://sesaf-barbershop.vercel.app";
   const logoUrl = `${baseUrl}/logo.png`;
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
 
   const locationHtml =
     data.locationType === "DOMICILE"
@@ -51,7 +46,7 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
     </table>
   </td></tr>`;
 
-  const html = `
+  const customerHtml = `
 <!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -126,27 +121,11 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
 </body>
 </html>`;
 
-  try {
-    // Email au client
-    await transporter.sendMail({
-      from: `"SESAF Barbershop" <${process.env.SMTP_USER}>`,
-      to: data.customerEmail,
-      subject: "Reservation confirmee - SESAF Barbershop",
-      html,
-    });
+  const locationText = data.locationType === "DOMICILE"
+    ? `A domicile - ${data.address || "adresse non precisee"}`
+    : "Au salon - Bat D Arancette";
 
-    // Notification au barber (admin)
-    const adminEmail = process.env.SMTP_USER;
-    if (adminEmail) {
-      const locationText = data.locationType === "DOMICILE"
-        ? `A domicile - ${data.address || "adresse non precisee"}`
-        : "Au salon - Bat D Arancette";
-
-      await transporter.sendMail({
-        from: `"SESAF Barbershop" <${adminEmail}>`,
-        to: adminEmail,
-        subject: `Nouvelle reservation - ${data.customerName}`,
-        html: `
+  const adminHtml = `
 <!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
@@ -182,9 +161,24 @@ export async function sendBookingConfirmation(data: BookingEmailData) {
 </td></tr>
 </table>
 </body>
-</html>`,
-      });
-    }
+</html>`;
+
+  try {
+    // Email au client
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "SESAF Barbershop <onboarding@resend.dev>",
+      to: data.customerEmail,
+      subject: "Reservation confirmee - SESAF Barbershop",
+      html: customerHtml,
+    });
+
+    // Notification au barber (admin)
+    await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "SESAF Barbershop <onboarding@resend.dev>",
+      to: adminEmail,
+      subject: `Nouvelle reservation - ${data.customerName}`,
+      html: adminHtml,
+    });
 
     return { success: true };
   } catch (error) {
