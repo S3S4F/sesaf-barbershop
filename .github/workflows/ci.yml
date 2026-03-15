@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run lint
@@ -27,13 +27,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npx prisma generate
       - run: npm test
         env:
-          DATABASE_URL: file:./test.db
+          DATABASE_URL: postgresql://fake:fake@localhost:5432/fake
 
   build:
     name: Build
@@ -43,13 +43,19 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       - run: npx prisma generate
       - run: npm run build
         env:
           DATABASE_URL: postgresql://fake:fake@localhost:5432/fake
+          RESEND_API_KEY: re_dummy_build_key
+          RESEND_FROM_EMAIL: SESAF Barbershop <noreply@barber.serignesalioufaye.me>
+          ADMIN_EMAIL: admin@example.com
+          CRON_SECRET: dummy_cron_secret
+          NEXT_PUBLIC_ADMIN_PASSWORD: dummy
+          NEXT_PUBLIC_BASE_URL: https://sesaf-barbershop.vercel.app
 
   docker:
     name: Docker Build
