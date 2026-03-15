@@ -17,9 +17,9 @@ COPY . .
 
 # Prisma v7 needs prisma.config.ts + schema to generate
 ENV NEXT_TELEMETRY_DISABLED=1
-# Provide a dummy DATABASE_URL for build (not used at runtime)
 ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
 ENV RESEND_API_KEY="re_dummy_build"
+ENV DOCKER_BUILD="1"
 RUN npx prisma generate
 RUN npm run build
 
