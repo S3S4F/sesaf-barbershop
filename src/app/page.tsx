@@ -17,45 +17,45 @@ import {
 
 const services = [
   {
-    name: "Taper",
-    description: "Coupe taper fade moderne et nette",
+    name: "Coupe Simple",
+    description: "Coupe classique au ciseau ou tondeuse, rapide et propre",
     duration: 30,
-    price: 800,
+    price: 1000,
     icon: Scissors,
   },
   {
-    name: "Raser",
-    description: "Rasage à blanc à la tondeuse ou lame",
-    duration: 20,
-    price: 500,
+    name: "Dégradé",
+    description: "Dégradé américain bas, moyen ou haut — le classique campus",
+    duration: 35,
+    price: 1000,
     icon: Zap,
   },
   {
-    name: "Dégradé",
-    description: "Dégradé bas, moyen ou haut, style précis",
+    name: "Dégradé + Barbe",
+    description: "Dégradé complet avec taille et mise en forme de la barbe",
+    duration: 50,
+    price: 1200,
+    icon: Star,
+  },
+  {
+    name: "Dégradé + Design",
+    description: "Dégradé avec traits ou motifs personnalisés sur mesure",
+    duration: 50,
+    price: 1300,
+    icon: Sparkles,
+  },
+  {
+    name: "Coupe Afro",
+    description: "Entretien et mise en forme afro pour cheveux naturels",
     duration: 40,
     price: 1200,
     icon: Zap,
   },
   {
-    name: "Rasage Complet",
-    description: "Rasage complet à la lame avec serviette chaude",
-    duration: 30,
-    price: 800,
-    icon: Sparkles,
-  },
-  {
-    name: "Coupe + Barbe",
-    description: "Coupe complète avec taille de barbe soignée",
-    duration: 45,
-    price: 1200,
-    icon: Star,
-  },
-  {
     name: "Taille de Barbe",
-    description: "Taille et mise en forme de la barbe au rasoir",
+    description: "Taille, contour et mise en forme de la barbe uniquement",
     duration: 20,
-    price: 500,
+    price: 1000,
     icon: Scissors,
   },
 ];
@@ -126,7 +126,7 @@ export default function HomePage() {
                   <p className="text-xs text-zinc-500">★ Note</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-amber-400">5€</p>
+                  <p className="text-2xl font-bold text-amber-400">10€</p>
                   <p className="text-xs text-zinc-500">Dès</p>
                 </div>
               </div>
@@ -243,13 +243,14 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Card className="relative overflow-hidden">
               <CardContent className="p-8 text-center">
-                <h3 className="text-lg font-semibold text-white mb-2">Basique</h3>
-                <p className="text-zinc-500 text-sm mb-6">Coupe simple ou taille de barbe</p>
-                <p className="text-4xl font-bold text-white mb-1">5€ — 8€</p>
+                <h3 className="text-lg font-semibold text-white mb-2">Essentiel</h3>
+                <p className="text-zinc-500 text-sm mb-6">Coupe simple, barbe ou rasage</p>
+                <p className="text-4xl font-bold text-white mb-1">10€</p>
                 <p className="text-zinc-500 text-sm mb-6"></p>
                 <ul className="space-y-3 text-sm text-zinc-400 mb-8">
-                  <li className="flex items-center gap-2"><Scissors className="w-4 h-4 text-amber-500" />Coupe aux ciseaux/tondeuse</li>
-                  <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" />20-30 minutes</li>
+                  <li className="flex items-center gap-2"><Scissors className="w-4 h-4 text-amber-500" />Coupe simple / Dégradé</li>
+                  <li className="flex items-center gap-2"><Scissors className="w-4 h-4 text-amber-500" />Taille de barbe / Rasage</li>
+                  <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" />20-35 minutes</li>
                 </ul>
                 <Link href="/booking"><Button variant="outline" className="w-full">Réserver</Button></Link>
               </CardContent>
@@ -260,13 +261,13 @@ export default function HomePage() {
               <CardContent className="p-8 text-center">
                 <Badge className="mb-4">Le + populaire</Badge>
                 <h3 className="text-lg font-semibold text-white mb-2">Premium</h3>
-                <p className="text-zinc-500 text-sm mb-6">Dégradé ou coupe + barbe</p>
+                <p className="text-zinc-500 text-sm mb-6">Dégradé + barbe ou coupe afro</p>
                 <p className="text-4xl font-bold text-amber-400 mb-1">12€</p>
                 <p className="text-zinc-500 text-sm mb-6"></p>
                 <ul className="space-y-3 text-sm text-zinc-400 mb-8">
-                  <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-500" />Dégradé professionnel</li>
-                  <li className="flex items-center gap-2"><Scissors className="w-4 h-4 text-amber-500" />Coupe + taille de barbe</li>
-                  <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" />40-45 minutes</li>
+                  <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-500" />Dégradé + mise en forme barbe</li>
+                  <li className="flex items-center gap-2"><Scissors className="w-4 h-4 text-amber-500" />Coupe Afro naturelle</li>
+                  <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" />40-50 minutes</li>
                 </ul>
                 <Link href="/booking"><Button className="w-full">Réserver</Button></Link>
               </CardContent>
@@ -276,10 +277,10 @@ export default function HomePage() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-lg font-semibold text-white mb-2">Exclusive</h3>
                 <p className="text-zinc-500 text-sm mb-6">Dégradé avec design personnalisé</p>
-                <p className="text-4xl font-bold text-white mb-1">15€</p>
+                <p className="text-4xl font-bold text-white mb-1">13€</p>
                 <p className="text-zinc-500 text-sm mb-6"></p>
                 <ul className="space-y-3 text-sm text-zinc-400 mb-8">
-                  <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" />Design personnalisé</li>
+                  <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" />Design sur mesure</li>
                   <li className="flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-500" />Traits / motifs au choix</li>
                   <li className="flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" />50 minutes</li>
                 </ul>

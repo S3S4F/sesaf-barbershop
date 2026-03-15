@@ -2,10 +2,10 @@ import { prisma } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { addDays, format, nextSaturday, nextSunday, startOfDay } from "date-fns";
 
-// Génère les créneaux de 10h à 17h toutes les 30 minutes
+// Génère les créneaux de 11h à 20h toutes les 30 minutes
 function generateWeekendSlots(): { startTime: string; endTime: string }[] {
   const slots = [];
-  for (let hour = 10; hour < 17; hour++) {
+  for (let hour = 11; hour < 20; hour++) {
     for (const min of [0, 30]) {
       const startTime = `${String(hour).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
       const endMinutes = min + 30;
