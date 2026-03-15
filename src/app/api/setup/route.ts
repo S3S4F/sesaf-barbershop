@@ -61,14 +61,13 @@ export async function POST() {
 
     // Seed services (10-15€)
     const services = [
-      { id: "coupe-simple", name: "Coupe Simple", description: "Coupe classique aux ciseaux ou tondeuse", duration: 30, price: 1000, category: "coiffure" },
-      { id: "coupe-plus-barbe", name: "Coupe + Barbe", description: "Coupe complète avec taille de barbe soignée", duration: 45, price: 1300, category: "coiffure" },
-      { id: "dégradé", name: "Dégradé", description: "Dégradé américain, bas, moyen ou haut", duration: 40, price: 1200, category: "coiffure" },
-      { id: "dégradé-plus-design", name: "Dégradé + Design", description: "Dégradé avec traits ou motifs personnalisés", duration: 50, price: 1500, category: "coiffure" },
-      { id: "taille-de-barbe", name: "Taille de Barbe", description: "Taille et mise en forme de la barbe", duration: 20, price: 1000, category: "barbe" },
-      { id: "coupe-afro", name: "Coupe Afro", description: "Coupe, entretien et mise en forme afro", duration: 45, price: 1300, category: "coiffure" },
-      { id: "rasage-complet", name: "Rasage Complet", description: "Rasage complet à la lame avec serviette chaude", duration: 30, price: 1000, category: "barbe" },
-      { id: "coupe-enfant", name: "Coupe Enfant", description: "Coupe pour enfant de moins de 12 ans", duration: 25, price: 1000, category: "coiffure" },
+      { id: "coupe-simple", name: "Coupe Simple", description: "Coupe classique au ciseau ou tondeuse, rapide et propre", duration: 30, price: 1000, category: "coiffure" },
+      { id: "degrade", name: "Dégradé", description: "Dégradé américain bas, moyen ou haut — le classique campus", duration: 35, price: 1000, category: "coiffure" },
+      { id: "degrade-plus-barbe", name: "Dégradé + Barbe", description: "Dégradé complet avec taille et mise en forme de la barbe", duration: 50, price: 1200, category: "coiffure" },
+      { id: "degrade-plus-design", name: "Dégradé + Design", description: "Dégradé avec traits ou motifs personnalisés sur mesure", duration: 50, price: 1300, category: "coiffure" },
+      { id: "coupe-afro", name: "Coupe Afro", description: "Entretien et mise en forme afro pour cheveux naturels", duration: 40, price: 1200, category: "coiffure" },
+      { id: "taille-de-barbe", name: "Taille de Barbe", description: "Taille, contour et mise en forme de la barbe uniquement", duration: 20, price: 1000, category: "barbe" },
+      { id: "rasage-complet", name: "Rasage Complet", description: "Rasage intégral à la lame avec serviette chaude", duration: 30, price: 1000, category: "barbe" },
     ];
 
     for (const s of services) {
