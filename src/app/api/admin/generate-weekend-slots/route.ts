@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { verifyAdminToken } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { format, getDaysInMonth } from "date-fns";
 
@@ -28,6 +29,9 @@ function getWeekendDaysOfMonth(year: number, month: number): Date[] {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminToken(request);
+  if (!auth.valid) return auth.error!;
+
   try {
     const body = await request.json();
     const { months, year } = body as { months: number[]; year: number };

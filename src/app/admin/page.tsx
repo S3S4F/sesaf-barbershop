@@ -53,7 +53,7 @@ interface TimeSlot {
   startTime: string;
   endTime: string;
   isAvailable: boolean;
-  booking: { customerName: string; status: string } | null;
+  bookings: { customerName: string; status: string }[];
 }
 
 export default function AdminPage() {
@@ -75,13 +75,23 @@ export default function AdminPage() {
   const [generating, setGenerating] = useState(false);
   const [generateMsg, setGenerateMsg] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.SyntheticEvent) => {
     e.preventDefault();
-    if (password === (process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "sesaf2024")) {
-      setIsAuthenticated(true);
-      setAuthError("");
-    } else {
-      setAuthError("Mot de passe incorrect");
+    setAuthError("");
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      if (res.ok) {
+        setIsAuthenticated(true);
+      } else {
+        const data = await res.json();
+        setAuthError(data.error || "Mot de passe incorrect");
+      }
+    } catch {
+      setAuthError("Erreur de connexion");
     }
   };
 
@@ -110,6 +120,13 @@ export default function AdminPage() {
     } finally {
       setSlotsLoading(false);
     }
+  }, []);
+
+  // Vérifier si déjà connecté (cookie JWT valide)
+  useEffect(() => {
+    fetch("/api/admin/me")
+      .then((res) => { if (res.ok) setIsAuthenticated(true); })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -273,7 +290,10 @@ export default function AdminPage() {
           </div>
           <Button
             variant="ghost"
-            onClick={() => setIsAuthenticated(false)}
+            onClick={async () => {
+              await fetch("/api/admin/logout", { method: "POST" });
+              setIsAuthenticated(false);
+            }}
           >
             Déconnexion
           </Button>
@@ -647,16 +667,16 @@ export default function AdminPage() {
                         </div>
 
                         <div className="flex items-center gap-3">
-                          {slot.booking ? (
+                          {slot.bookings && slot.bookings.length > 0 ? (
                             <Badge variant="success" className="text-xs">
-                              {slot.booking.customerName}
+                              {slot.bookings[0].customerName}
                             </Badge>
                           ) : (
                             <Badge className="text-xs bg-zinc-700 text-zinc-400">
                               Libre
                             </Badge>
                           )}
-                          {!slot.booking && (
+                          {(!slot.bookings || slot.bookings.length === 0) && (
                             <button
                               onClick={() => handleDeleteSlot(slot.id)}
                               className="p-1.5 rounded-lg bg-red-600/10 text-red-400 hover:bg-red-600/20 transition-colors"

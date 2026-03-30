@@ -1,7 +1,10 @@
 import { prisma } from "@/lib/db";
+import { verifyAdminToken } from "@/lib/admin-auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
+  const auth = await verifyAdminToken(request);
+  if (!auth.valid) return auth.error!;
   try {
     const { searchParams } = new URL(request.url);
     const dateStr = searchParams.get("date");
@@ -40,6 +43,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminToken(request);
+  if (!auth.valid) return auth.error!;
+
   try {
     const body = await request.json();
     const { date, startTime, endTime } = body;
@@ -82,6 +88,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const auth = await verifyAdminToken(request);
+  if (!auth.valid) return auth.error!;
+
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
