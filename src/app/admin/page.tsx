@@ -69,9 +69,11 @@ export default function AdminPage() {
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [newSlotDate, setNewSlotDate] = useState("");
-  const [newSlotStart, setNewSlotStart] = useState("09:00");
-  const [newSlotEnd, setNewSlotEnd] = useState("09:30");
+  const [newSlotStart, setNewSlotStart] = useState("10:00");
+  const [newSlotEnd, setNewSlotEnd] = useState("11:00");
   const [slotError, setSlotError] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [generateMsg, setGenerateMsg] = useState("");
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,6 +129,26 @@ export default function AdminPage() {
       fetchBookings();
     } catch {
       // silently fail
+    }
+  };
+
+  const handleGenerateWeekendSlots = async (months: number[]) => {
+    setGenerating(true);
+    setGenerateMsg("");
+    try {
+      const res = await fetch("/api/admin/generate-weekend-slots", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ months, year: 2026 }),
+      });
+      const data = await res.json();
+      if (!res.ok) { setGenerateMsg(data.error || "Erreur"); return; }
+      setGenerateMsg(data.message);
+      fetchSlots();
+    } catch {
+      setGenerateMsg("Erreur de connexion");
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -493,6 +515,39 @@ export default function AdminPage() {
         {/* === SLOTS TAB === */}
         {activeTab === "slots" && (
           <div className="space-y-6">
+            {/* Génération weekends en masse */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Calendar className="w-5 h-5 text-amber-500" />
+                  Générer créneaux weekends (10h – 22h, toutes les 1h)
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: "Avril 2026", months: [4] },
+                    { label: "Juin 2026", months: [6] },
+                    { label: "Juillet 2026", months: [7] },
+                    { label: "Avril + Juin + Juillet", months: [4, 6, 7] },
+                  ].map((opt) => (
+                    <Button
+                      key={opt.label}
+                      onClick={() => handleGenerateWeekendSlots(opt.months)}
+                      disabled={generating}
+                      variant="outline"
+                      className="text-sm"
+                    >
+                      {generating ? "Génération..." : opt.label}
+                    </Button>
+                  ))}
+                </div>
+                {generateMsg && (
+                  <p className="text-emerald-400 text-xs mt-3">{generateMsg}</p>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Add slot form */}
             <Card>
               <CardHeader>
