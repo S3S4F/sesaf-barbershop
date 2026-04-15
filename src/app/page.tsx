@@ -277,7 +277,7 @@ export default function HomePage() {
               <CardContent className="p-8 text-center">
                 <h3 className="text-lg font-semibold text-white mb-2">Exclusive</h3>
                 <p className="text-zinc-500 text-sm mb-6">Dégradé avec design personnalisé</p>
-                <p className="text-4xl font-bold text-white mb-1">13€</p>
+                <p className="text-4xl font-bold text-white mb-1">12€</p>
                 <p className="text-zinc-500 text-sm mb-6"></p>
                 <ul className="space-y-3 text-sm text-zinc-400 mb-8">
                   <li className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-500" />Design sur mesure</li>
