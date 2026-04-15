@@ -18,70 +18,65 @@ import {
   CalendarCheck,
 } from "lucide-react";
 
+const img = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`;
+
 const services: Service[] = [
   {
     name: "Coupe Simple",
     description: "Coupe classique au ciseau ou tondeuse, rapide et propre",
     duration: 30,
     price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1521322800607-8c38375eef04?auto=format&fit=crop&w=600&q=80",
+    image: img("1504257432389-52343af06ae3"),
   },
   {
     name: "Taper",
     description: "Taper fade précis, transitions nettes sur les côtés",
     duration: 30,
     price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=80",
+    image: img("1621605815971-fbc98d665033"),
   },
   {
     name: "Dégradé",
     description: "Dégradé américain bas, moyen ou haut — le classique campus",
     duration: 35,
     price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=80",
+    image: img("1605497788044-5a32c7078486"),
   },
   {
     name: "Dégradé + Barbe",
     description: "Dégradé complet avec taille et mise en forme de la barbe",
     duration: 50,
     price: 1200,
-    image:
-      "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?auto=format&fit=crop&w=600&q=80",
+    image: img("1599351431202-1e0f0137899a"),
   },
   {
     name: "Dégradé + Design",
     description: "Dégradé avec traits ou motifs personnalisés sur mesure",
     duration: 50,
     price: 1200,
-    image:
-      "https://images.unsplash.com/photo-1635273051839-003bf06a8751?auto=format&fit=crop&w=600&q=80",
+    image: img("1635273051839-003bf06a8751"),
   },
   {
     name: "Coupe Afro",
     description: "Entretien et mise en forme afro pour cheveux naturels",
     duration: 40,
     price: 1200,
-    image:
-      "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=600&q=80",
+    image: img("1580618672591-eb180b1a973f"),
   },
   {
     name: "Taille de Barbe",
     description: "Taille, contour et mise en forme de la barbe uniquement",
     duration: 20,
     price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1622287162716-f311baa1a2b8?auto=format&fit=crop&w=600&q=80",
+    image: img("1519699047748-de8e457a634e"),
   },
   {
     name: "Rasage Complet",
     description: "Rasage intégral à la lame avec serviette chaude",
     duration: 30,
     price: 1000,
-    image:
-      "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?auto=format&fit=crop&w=600&q=80",
+    image: img("1622286342621-4bd786c2447c"),
   },
 ];
 
