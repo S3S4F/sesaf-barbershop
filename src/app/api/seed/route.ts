@@ -6,6 +6,7 @@ export async function POST() {
     // Seed services : uniquement 10€ (1000) et 12€ (1200)
     const services = [
       { name: "Coupe Simple", description: "Coupe classique au ciseau ou tondeuse, rapide et propre", duration: 30, price: 1000, category: "coiffure" },
+      { name: "Taper", description: "Taper fade précis, transitions nettes sur les côtés", duration: 30, price: 1000, category: "coiffure" },
       { name: "Dégradé", description: "Dégradé américain bas, moyen ou haut — le classique campus", duration: 35, price: 1000, category: "coiffure" },
       { name: "Dégradé + Barbe", description: "Dégradé complet avec taille et mise en forme de la barbe", duration: 50, price: 1200, category: "coiffure" },
       { name: "Dégradé + Design", description: "Dégradé avec traits ou motifs personnalisés sur mesure", duration: 50, price: 1200, category: "coiffure" },
