@@ -149,14 +149,14 @@ export default function AdminPage() {
     }
   };
 
-  const handleGenerateWeekendSlots = async (months: number[]) => {
+  const handleGenerateWeekendSlots = async (monthsAhead: number) => {
     setGenerating(true);
     setGenerateMsg("");
     try {
       const res = await fetch("/api/admin/generate-weekend-slots", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ months, year: 2026 }),
+        body: JSON.stringify({ monthsAhead }),
       });
       const data = await res.json();
       if (!res.ok) { setGenerateMsg(data.error || "Erreur"); return; }
@@ -546,14 +546,14 @@ export default function AdminPage() {
               <CardContent>
                 <div className="flex flex-wrap gap-3">
                   {[
-                    { label: "Avril 2026", months: [4] },
-                    { label: "Juin 2026", months: [6] },
-                    { label: "Juillet 2026", months: [7] },
-                    { label: "Avril + Juin + Juillet", months: [4, 6, 7] },
+                    { label: "1 mois", monthsAhead: 1 },
+                    { label: "3 mois", monthsAhead: 3 },
+                    { label: "6 mois", monthsAhead: 6 },
+                    { label: "12 mois", monthsAhead: 12 },
                   ].map((opt) => (
                     <Button
                       key={opt.label}
-                      onClick={() => handleGenerateWeekendSlots(opt.months)}
+                      onClick={() => handleGenerateWeekendSlots(opt.monthsAhead)}
                       disabled={generating}
                       variant="outline"
                       className="text-sm"

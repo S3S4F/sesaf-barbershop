@@ -41,7 +41,7 @@ const services = [
     name: "Dégradé + Design",
     description: "Dégradé avec traits ou motifs personnalisés sur mesure",
     duration: 50,
-    price: 1300,
+    price: 1200,
     icon: Sparkles,
   },
   {
