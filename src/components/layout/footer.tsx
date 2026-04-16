@@ -37,7 +37,7 @@ export function Footer() {
               </div>
               <div className="flex items-center gap-3 text-zinc-400 text-sm">
                 <Mail className="w-4 h-4 text-amber-500 shrink-0" />
-                <span>contact@sesaf1998@gmail.com.fr</span>
+                <span>sesaf1998@gmail.com</span>
               </div>
             </div>
           </div>
@@ -49,9 +49,8 @@ export function Footer() {
               <div className="flex items-center gap-3 text-zinc-400 text-sm">
                 <Clock className="w-4 h-4 text-amber-500 shrink-0" />
                 <div>
-                  <p>Lun - Ven : 9h00 - 18h00</p>
-                  <p>Samedi : 9h00 - 15h00</p>
-                  <p>Dimanche : Fermé</p>
+                  <p>Samedi &amp; Dimanche : 10h00 - 22h00</p>
+                  <p>Lun - Ven : Sur rendez-vous</p>
                 </div>
               </div>
             </div>

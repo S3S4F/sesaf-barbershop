@@ -15,8 +15,10 @@ export async function POST() {
       { name: "Rasage Complet", description: "Rasage intégral à la lame avec serviette chaude", duration: 30, price: 1000, category: "barbe" },
     ];
 
+    const validIds: string[] = [];
     for (const service of services) {
       const id = service.name.toLowerCase().replace(/\s+/g, "-").replace(/\+/g, "plus");
+      validIds.push(id);
       await prisma.service.upsert({
         where: { id },
         update: service,
@@ -24,7 +26,12 @@ export async function POST() {
       });
     }
 
-    return NextResponse.json({ success: true, message: "Services créés ! Définis tes créneaux depuis le dashboard admin." });
+    await prisma.service.updateMany({
+      where: { id: { notIn: validIds } },
+      data: { isActive: false },
+    });
+
+    return NextResponse.json({ success: true, message: `${services.length} services actifs, anciens désactivés.` });
   } catch (error) {
     console.error("Seed error:", error);
     return NextResponse.json({ error: "Erreur lors du seed" }, { status: 500 });
