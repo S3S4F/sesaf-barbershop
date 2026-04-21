@@ -58,3 +58,14 @@ model AdminUser {
   name      String
   createdAt DateTime @default(now())
 }
+
+model GalleryPhoto {
+  id        String   @id @default(cuid())
+  url       String
+  caption   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([order])
+  @@index([createdAt])
+}

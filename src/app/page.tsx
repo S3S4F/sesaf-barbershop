@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ServicesGrid, type Service } from "@/components/home/services-grid";
 import { FadeIn } from "@/components/home/fade-in";
+import { prisma } from "@/lib/db";
+import { resolveServiceImage } from "@/lib/service-images";
 import {
   Scissors,
   Clock,
@@ -18,76 +20,48 @@ import {
   CalendarCheck,
 } from "lucide-react";
 
-const img = (id: string) =>
-  `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=600&q=80`;
+export const dynamic = "force-dynamic";
 
-const services: Service[] = [
-  {
-    name: "Coupe Simple",
-    description: "Coupe classique au ciseau ou tondeuse, rapide et propre",
-    duration: 30,
-    price: 1000,
-    image: img("1504257432389-52343af06ae3"),
-  },
-  {
-    name: "Taper",
-    description: "Taper fade précis, transitions nettes sur les côtés",
-    duration: 30,
-    price: 1000,
-    image: img("1621605815971-fbc98d665033"),
-  },
-  {
-    name: "Dégradé",
-    description: "Dégradé américain bas, moyen ou haut — le classique campus",
-    duration: 35,
-    price: 1000,
-    image: img("1605497788044-5a32c7078486"),
-  },
-  {
-    name: "Dégradé + Barbe",
-    description: "Dégradé complet avec taille et mise en forme de la barbe",
-    duration: 50,
-    price: 1200,
-    image: img("1599351431202-1e0f0137899a"),
-  },
-  {
-    name: "Dégradé + Design",
-    description: "Dégradé avec traits ou motifs personnalisés sur mesure",
-    duration: 50,
-    price: 1200,
-    image: img("1635273051839-003bf06a8751"),
-  },
-  {
-    name: "Coupe Afro",
-    description: "Entretien et mise en forme afro pour cheveux naturels",
-    duration: 40,
-    price: 1200,
-    image: img("1580618672591-eb180b1a973f"),
-  },
-  {
-    name: "Taille de Barbe",
-    description: "Taille, contour et mise en forme de la barbe uniquement",
-    duration: 20,
-    price: 1000,
-    image: img("1519699047748-de8e457a634e"),
-  },
-  {
-    name: "Rasage Complet",
-    description: "Rasage intégral à la lame avec serviette chaude",
-    duration: 30,
-    price: 1000,
-    image: img("1622286342621-4bd786c2447c"),
-  },
+const fallbackServices: Service[] = [
+  { name: "Coupe Simple", description: "Coupe classique au ciseau ou tondeuse, rapide et propre", duration: 30, price: 1200, image: resolveServiceImage("Coupe Simple", null) },
+  { name: "Taper", description: "Taper fade précis, transitions nettes sur les côtés", duration: 30, price: 1200, image: resolveServiceImage("Taper", null) },
+  { name: "Dégradé", description: "Dégradé américain bas, moyen ou haut — le classique campus", duration: 35, price: 1300, image: resolveServiceImage("Dégradé", null) },
+  { name: "Dégradé + Barbe", description: "Dégradé complet avec taille et mise en forme de la barbe", duration: 50, price: 1500, image: resolveServiceImage("Dégradé + Barbe", null) },
+  { name: "Dégradé + Design", description: "Dégradé avec traits ou motifs personnalisés sur mesure", duration: 50, price: 1500, image: resolveServiceImage("Dégradé + Design", null) },
+  { name: "Coupe Afro", description: "Entretien et mise en forme afro pour cheveux naturels", duration: 40, price: 1400, image: resolveServiceImage("Coupe Afro", null) },
+  { name: "Taille de Barbe", description: "Taille, contour et mise en forme de la barbe uniquement", duration: 20, price: 1200, image: resolveServiceImage("Taille de Barbe", null) },
+  { name: "Rasage Complet", description: "Rasage intégral à la lame avec serviette chaude", duration: 30, price: 1300, image: resolveServiceImage("Rasage Complet", null) },
 ];
 
+async function getServices(): Promise<Service[]> {
+  try {
+    const rows = await prisma.service.findMany({
+      where: { isActive: true },
+      orderBy: { price: "asc" },
+    });
+    if (rows.length === 0) return fallbackServices;
+    return rows.map((r) => ({
+      name: r.name,
+      description: r.description,
+      duration: r.duration,
+      price: r.price,
+      image: resolveServiceImage(r.name, r.imageUrl),
+    }));
+  } catch {
+    return fallbackServices;
+  }
+}
+
 const highlights = [
-  { label: "Tarif de base", value: "10€", icon: Euro },
+  { label: "Tarif de base", value: "12€", icon: Euro },
   { label: "Service salon", value: "Arancette", icon: MapPin },
   { label: "À domicile", value: "+0.35€/km", icon: Home },
   { label: "Weekends", value: "10h–22h", icon: CalendarCheck },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const services = await getServices();
+
   return (
     <div className="relative">
       {/* Hero */}
@@ -102,7 +76,7 @@ export default function HomePage() {
               <div className="inline-flex items-center gap-2 bg-amber-600/10 border border-amber-600/20 rounded-full px-4 py-2">
                 <Sparkles className="w-4 h-4 text-amber-400" />
                 <span className="text-amber-400 text-sm font-medium">
-                  Tarifs étudiants — 10€ &amp; 12€
+                  Tarifs étudiants — de 12€ à 15€
                 </span>
               </div>
 
@@ -140,11 +114,11 @@ export default function HomePage() {
 
               <div className="flex flex-wrap gap-6 pt-2">
                 <div>
-                  <p className="text-2xl font-bold text-amber-400">10€</p>
+                  <p className="text-2xl font-bold text-amber-400">12€</p>
                   <p className="text-xs text-zinc-500">Dès</p>
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-amber-400">12€</p>
+                  <p className="text-2xl font-bold text-amber-400">15€</p>
                   <p className="text-xs text-zinc-500">Premium</p>
                 </div>
                 <div>
@@ -197,7 +171,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Highlights (remplace les stats bidons) */}
+      {/* Highlights */}
       <section className="py-16 border-y border-zinc-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
@@ -246,7 +220,7 @@ export default function HomePage() {
               <span className="text-amber-400">ton budget</span>
             </h2>
             <p className="text-zinc-400 mt-3 max-w-2xl mx-auto">
-              Deux tarifs simples, c&apos;est tout.
+              De 12€ à 15€ — rien de plus simple.
             </p>
           </FadeIn>
 
@@ -258,17 +232,20 @@ export default function HomePage() {
                     Essentiel
                   </h3>
                   <p className="text-zinc-500 text-sm mb-6">
-                    Coupe, dégradé, taper, barbe ou rasage
+                    Coupe simple, taper, dégradé, barbe, rasage
                   </p>
-                  <p className="text-5xl font-bold text-white mb-6">10€</p>
+                  <p className="text-5xl font-bold text-white mb-2">
+                    <span className="text-2xl font-medium text-zinc-400">dès </span>12€
+                  </p>
+                  <p className="text-xs text-zinc-500 mb-6">12€ – 13€</p>
                   <ul className="space-y-3 text-sm text-zinc-400 mb-8 text-left max-w-xs mx-auto">
                     <li className="flex items-center gap-2">
                       <Scissors className="w-4 h-4 text-amber-500 shrink-0" />
-                      Coupe simple / Dégradé / Taper
+                      Coupe Simple / Taper / Taille de Barbe — 12€
                     </li>
                     <li className="flex items-center gap-2">
                       <Scissors className="w-4 h-4 text-amber-500 shrink-0" />
-                      Taille de barbe / Rasage complet
+                      Dégradé / Rasage Complet — 13€
                     </li>
                     <li className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-amber-500 shrink-0" />
@@ -293,17 +270,20 @@ export default function HomePage() {
                     Premium
                   </h3>
                   <p className="text-zinc-500 text-sm mb-6">
-                    Dégradé + barbe, coupe afro ou design
+                    Coupe afro, dégradé + barbe, design sur mesure
                   </p>
-                  <p className="text-5xl font-bold text-amber-400 mb-6">12€</p>
+                  <p className="text-5xl font-bold text-amber-400 mb-2">
+                    <span className="text-2xl font-medium text-zinc-400">dès </span>14€
+                  </p>
+                  <p className="text-xs text-zinc-500 mb-6">14€ – 15€</p>
                   <ul className="space-y-3 text-sm text-zinc-400 mb-8 text-left max-w-xs mx-auto">
                     <li className="flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
-                      Dégradé + mise en forme barbe
+                      Coupe Afro — 14€
                     </li>
                     <li className="flex items-center gap-2">
                       <Scissors className="w-4 h-4 text-amber-500 shrink-0" />
-                      Coupe Afro / Design sur mesure
+                      Dégradé + Barbe / Dégradé + Design — 15€
                     </li>
                     <li className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-amber-500 shrink-0" />
@@ -376,7 +356,7 @@ export default function HomePage() {
                 <Card className="p-6 text-center">
                   <Zap className="w-8 h-8 text-amber-500 mx-auto mb-3" />
                   <h3 className="text-white font-semibold mb-1">Abordable</h3>
-                  <p className="text-zinc-500 text-xs">10€ / 12€</p>
+                  <p className="text-zinc-500 text-xs">12€ – 15€</p>
                 </Card>
               </div>
             </FadeIn>

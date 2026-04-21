@@ -32,6 +32,9 @@ export function Navbar() {
             <Link href="/#tarifs" className="text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium">
               Tarifs
             </Link>
+            <Link href="/galerie" className="text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium">
+              Galerie
+            </Link>
             <Link href="/#about" className="text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium">
               À propos
             </Link>
@@ -58,6 +61,9 @@ export function Navbar() {
             </Link>
             <Link href="/#tarifs" onClick={() => setIsOpen(false)} className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium py-2">
               Tarifs
+            </Link>
+            <Link href="/galerie" onClick={() => setIsOpen(false)} className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium py-2">
+              Galerie
             </Link>
             <Link href="/#about" onClick={() => setIsOpen(false)} className="block text-zinc-400 hover:text-amber-400 transition-colors text-sm font-medium py-2">
               À propos

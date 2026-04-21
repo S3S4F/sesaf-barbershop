@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/utils";
+import { ServicesManager } from "@/components/admin/services-manager";
+import { GalleryManager } from "@/components/admin/gallery-manager";
 import {
   Scissors,
   Calendar,
@@ -19,6 +21,8 @@ import {
   Trash2,
   MapPin,
   Home,
+  Image as ImageIcon,
+  Images,
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -63,7 +67,9 @@ export default function AdminPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<string>("all");
-  const [activeTab, setActiveTab] = useState<"bookings" | "slots">("bookings");
+  const [activeTab, setActiveTab] = useState<
+    "bookings" | "slots" | "services" | "gallery"
+  >("bookings");
 
   // Slot management state
   const [slots, setSlots] = useState<TimeSlot[]>([]);
@@ -366,11 +372,11 @@ export default function AdminPage() {
           </Card>
         </div>
 
-        {/* Tabs: Réservations / Créneaux */}
-        <div className="flex gap-2 mb-6">
+        {/* Tabs */}
+        <div className="flex gap-2 mb-6 overflow-x-auto">
           <button
             onClick={() => setActiveTab("bookings")}
-            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === "bookings"
                 ? "bg-amber-600 text-white"
                 : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
@@ -381,7 +387,7 @@ export default function AdminPage() {
           </button>
           <button
             onClick={() => setActiveTab("slots")}
-            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap ${
               activeTab === "slots"
                 ? "bg-amber-600 text-white"
                 : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
@@ -389,6 +395,28 @@ export default function AdminPage() {
           >
             <Clock className="w-4 h-4 inline mr-2" />
             Mes créneaux
+          </button>
+          <button
+            onClick={() => setActiveTab("services")}
+            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "services"
+                ? "bg-amber-600 text-white"
+                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+            }`}
+          >
+            <ImageIcon className="w-4 h-4 inline mr-2" />
+            Images services
+          </button>
+          <button
+            onClick={() => setActiveTab("gallery")}
+            className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-colors whitespace-nowrap ${
+              activeTab === "gallery"
+                ? "bg-amber-600 text-white"
+                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+            }`}
+          >
+            <Images className="w-4 h-4 inline mr-2" />
+            Galerie
           </button>
         </div>
 
@@ -694,6 +722,12 @@ export default function AdminPage() {
             </Card>
           </div>
         )}
+
+        {/* === SERVICES TAB === */}
+        {activeTab === "services" && <ServicesManager />}
+
+        {/* === GALLERY TAB === */}
+        {activeTab === "gallery" && <GalleryManager />}
       </div>
     </div>
   );
